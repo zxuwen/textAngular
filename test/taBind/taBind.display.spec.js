@@ -4,9 +4,9 @@ describe('taBind.display', function () {
 	afterEach(inject(function($document){
 		$document.find('body').html('');
 	}));
-	
+
 	var $rootScope;
-	
+
 	describe('should respect HTML5 placeholder', function () {
 		describe('and require an id', function(){
 			it('should error', inject(function ($compile, $rootScope) {
@@ -16,7 +16,7 @@ describe('taBind.display', function () {
 				}).toThrow('textAngular Error: An unique ID is required for placeholders to work');
 			}));
 		});
-		
+
 		describe('and cleanup after itself on $destroy', function(){
 			it('removing specific styles', inject(function ($compile, $rootScope, $document) {
 				$rootScope.html = '';
@@ -28,7 +28,7 @@ describe('taBind.display', function () {
 				expect(document.styleSheets[1].rules.length).toBe(0);
 			}));
 		});
-		
+
 		describe('as contenteditable div initially blank', function(){
 			var $rootScope, element, $window;
 			beforeEach(inject(function (_$compile_, _$rootScope_, _$window_, $document) {
@@ -39,7 +39,7 @@ describe('taBind.display', function () {
 				$document.find('body').append(element);
 				$rootScope.$digest();
 			}));
-			
+
 			afterEach(function(){
 				element.remove();
 			});
