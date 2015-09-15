@@ -137,7 +137,7 @@ module.exports = function (grunt) {
 			},
 			dist: {
                 files:{
-                    'dist/textAngular.js': ['src/globals.js','src/factories.js','src/DOM.js','src/validators.js','src/taBind.js','src/main.js'],
+                    'dist/textAngular.js': ['src/globals.js','src/factories.js','src/DOM.js','src/validators.js','src/taBind.js','src/textAngular-dropdownToggle.js', 'src/main.js'],
                 }
 			},
 		},

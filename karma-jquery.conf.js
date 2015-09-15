@@ -17,6 +17,7 @@ module.exports = function (config) {
 			'bower_components/rangy/rangy-selectionsaverestore.js',
 			'bower_components/angular/angular.min.js',
 			'bower_components/angular-mocks/angular-mocks.js',
+			'bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
 			'dist/textAngular-sanitize.js',
 			'dist/textAngularSetup.js',
 			'dist/textAngular.js',

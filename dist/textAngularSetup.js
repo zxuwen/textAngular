@@ -2,9 +2,9 @@ angular.module('textAngularSetup', [])
 // Here we set up the global display defaults, to set your own use a angular $provider#decorator.
 .value('taOptions',  {
 	//////////////////////////////////////////////////////////////////////////////////////
-    // forceTextAngularSanitize
-    // set false to allow the textAngular-sanitize provider to be replaced
-    // with angular-sanitize or a custom provider.
+	// forceTextAngularSanitize
+	// set false to allow the textAngular-sanitize provider to be replaced
+	// with angular-sanitize or a custom provider.
 	forceTextAngularSanitize: true,
 	///////////////////////////////////////////////////////////////////////////////////////
 	// keyMappings
@@ -36,7 +36,8 @@ angular.module('textAngularSetup', [])
 		['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
 		['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
 		['justifyLeft','justifyCenter','justifyRight','justifyFull','indent','outdent'],
-		['html', 'insertImage', 'insertLink', 'insertVideo', 'wordcount', 'charcount']
+		['html', 'insertImage', 'insertLink', 'insertVideo', 'wordcount', 'charcount'],
+		['fontSize', 'fontColor', 'insertTencentVideo']
 	],
 	classes: {
 		focussed: "focussed",
@@ -761,6 +762,64 @@ angular.module('textAngularSetup', [])
 			this.charcount = noOfChars;
 			//Set editor scope
 			this.$editor().charcount = noOfChars;
+			return false;
+		}
+	});
+	taRegisterTool('insertTencentVideo', {
+		iconclass: 'fa fa-video-camera',
+		tooltiptext: "Insert Tencent Video",
+		action: function(){
+			var urlPrompt;
+			urlPrompt = $window.prompt('Please enter a Tencent video to embed', 'http://');
+			if (urlPrompt && urlPrompt !== '' && urlPrompt !== 'http://') {
+				// get the video ID
+				var ids = urlPrompt.match(/(\?|&)vid=[^&]*/);
+				/* istanbul ignore else: if it's invalid don't worry - though probably should show some kind of error message */
+				if(ids.length > 0){
+					// create the embed link
+					var urlLink = "http://v.qq.com/iframe/player.html?auto=0&" + ids[0];
+					// create the HTML
+					var embed = '<iframe frameborder="0" width="500" height="375" src=' + urlLink + ' allowfullscreen></iframe>';
+					// insert
+					return this.$editor().wrapSelection('insertHTML', embed, true);
+				}
+			}
+		}
+	});	
+	taRegisterTool('fontSize', {
+		display: "<button class='btn btn-default dropdown-toggle' type='button'><i class='fa fa-text-height'></i><i class='fa fa-caret-down'></i></button>" +
+				"<ul role='menu' class='dropdown-menu'><li role='menuitem' ng-repeat='o in options'><a href='' style='font-size: {{o.value}};' ng-click='setFontSize(o)'>{{o.value}}</a></li></ul>",
+		options: [
+			{ value: '48px' },
+			{ value: '36px' },
+			{ value: '24px' },
+			{ value: '20px' },
+			{ value: '18px' },
+			{ value: '16px' },
+			{ value: '14px' },
+			{ value: '12px' },
+			{ value: '10px' }
+		],
+		setFontSize: function (o) {
+			this.$editor().wrapSelection('formatBlock', '<span style="font-size:' + o.value + '">');
+		}
+	});
+	taRegisterTool('fontColor', {
+		display: '<button class="btn btn-default" colorpicker-with-input="true" colorpicker="hex" ng-model="color"><i class="fa fa-magic"></i></button>',
+		tooltiptext: "Select font color",
+		action: function (deferred) {
+			var self = this;
+			if (typeof self.listener === 'undefined') {
+				self.listener = self.$watch('color', function (newValue) {
+					self.$editor().wrapSelection('foreColor', newValue);
+				});
+			}
+			self.$on('colorpicker-selected', function () {
+				deferred.resolve();
+			});
+			self.$on('colorpicker-closed', function () {
+				deferred.resolve();
+			});
 			return false;
 		}
 	});

@@ -1930,9 +1930,49 @@ angular.module('textAngular.taBind', ['textAngular.factories', 'textAngular.DOM'
 	};
 }]);
 
+angular.module('ui.bootstrap.dropdownToggle', []).directive('dropdownToggle', ['$document', '$location', function ($document, $location) {
+  var openElement = null,
+      closeMenu   = angular.noop;
+  return {
+    restrict: 'CA',
+    link: function(scope, element, attrs) {
+      scope.$watch('$location.path', function() { closeMenu(); });
+      element.parent().bind('click', function() { closeMenu(); });
+      element.bind('click', function (event) {
+
+        var elementWasOpen = (element === openElement);
+        var menu = element.next('.dropdown-menu');
+        menu.removeClass("btn btn-default");
+        
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!!openElement) {
+          closeMenu();
+        }
+
+        if (!elementWasOpen && !element.hasClass('disabled') && !element.prop('disabled')) {
+          element.parent().addClass('open');
+          openElement = element;
+          closeMenu = function (event) {
+            if (event) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
+            $document.unbind('click', closeMenu);
+            element.parent().removeClass('open');
+            closeMenu = angular.noop;
+            openElement = null;
+          };
+          $document.bind('click', closeMenu);
+        }
+      });
+    }
+  };
+}]);
 // this global var is used to prevent multiple fires of the drop event. Needs to be global to the textAngular file.
 var dropFired = false;
-var textAngular = angular.module("textAngular", ['ngSanitize', 'textAngularSetup', 'textAngular.factories', 'textAngular.DOM', 'textAngular.validators', 'textAngular.taBind']); //This makes ngSanitize required
+var textAngular = angular.module("textAngular", ['ngSanitize', 'textAngularSetup', 'textAngular.factories', 'textAngular.DOM', 'textAngular.validators', 'textAngular.taBind', 'ui.bootstrap.dropdownToggle', 'colorpicker.module']); //This makes ngSanitize required
 
 // setup the global contstant functions for setting up the toolbar
 
