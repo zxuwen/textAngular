@@ -800,6 +800,7 @@ angular.module('textAngularSetup', [])
 			{ value: '12px' },
 			{ value: '10px' }
 		],
+		action: function (deferred) {},
 		setFontSize: function (o) {
 			this.$editor().wrapSelection('formatBlock', '<span style="font-size:' + o.value + '">');
 		}
